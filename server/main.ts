@@ -20,6 +20,8 @@ console.log(`Opening SQLite database at ${dbFilePath}`);
 
 await Deno.mkdir(path.dirname(dbFilePath), { recursive: true });
 const db = new Database(dbFilePath);
+
+console.log("Ensuring insights table exists");
 db.exec(createTable); // adding create table step const updated to be indempotent
 
 console.log("Initialising server");
@@ -43,11 +45,14 @@ router.get("/insights/:id", (ctx) => {
   ctx.response.body = result;
   ctx.response.status = 200;
 });
+
 //switched to post
-router.post("/insights/create", (ctx) => {
-  createInsights({ db }, ctx.params as Record<string, any> as Insert);
+router.post("/insights/create", async (ctx) => {
+  const requestBody = await ctx.request.body.json() as Insert;
+  createInsights({ db }, requestBody);
   ctx.response.status = 200;
 });
+
 //switch to delete
 router.delete("/insights/delete", (ctx) => {
   // TODO

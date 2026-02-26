@@ -17,7 +17,7 @@ export type Row = {
 
 export type Insert = {
   brand: number;
-  createdAt: string;
+  createdAt?: string;
   text: string;
 };
 
