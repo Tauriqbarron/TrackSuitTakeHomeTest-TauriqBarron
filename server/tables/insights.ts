@@ -6,7 +6,7 @@ export const createTable = `
     createdAt TEXT NOT NULL,
     text TEXT NOT NULL
   )
-`; 
+`;
 
 export type Row = {
   id: number;
@@ -21,5 +21,8 @@ export type Insert = {
   text: string;
 };
 
+// escaping single quotes in text to prevent SQL injection and syntax errors.
 export const insertStatement = (item: Insert) =>
-  `INSERT INTO insights (brand, createdAt, text) VALUES (${item.brand}, '${item.createdAt}', '${item.text}')`;
+  `INSERT INTO insights (brand, createdAt, text) VALUES (${item.brand}, '${item.createdAt}', '${
+    item.text.replace(/'/g, "''")
+  }')`;
