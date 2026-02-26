@@ -43,13 +43,13 @@ router.get("/insights/:id", (ctx) => {
   ctx.response.body = result;
   ctx.response.status = 200;
 });
-
-router.get("/insights/create", (ctx) => {
+//switched to post
+router.post("/insights/create", (ctx) => {
   createInsights({ db }, ctx.params as Record<string, any> as Insert);
   ctx.response.status = 200;
 });
-
-router.get("/insights/delete", (ctx) => {
+//switch to delete
+router.delete("/insights/delete", (ctx) => {
   // TODO
 });
 

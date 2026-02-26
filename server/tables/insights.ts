@@ -21,7 +21,7 @@ export type Insert = {
   text: string;
 };
 
-// escaping single quotes in text to prevent SQL injection and syntax errors.
+// escaping single quotes in text to prevent SQL injection and syntax errors. Could be improved by using parameterized queries as SQLite supports them, but this is a simple improvement for now.
 export const insertStatement = (item: Insert) =>
   `INSERT INTO insights (brand, createdAt, text) VALUES (${item.brand}, '${item.createdAt}', '${
     item.text.replace(/'/g, "''")
