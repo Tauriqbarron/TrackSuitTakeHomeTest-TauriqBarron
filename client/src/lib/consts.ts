@@ -1,8 +1,8 @@
 export const BRANDS = [
-  { id: 1, name: "Brand 1" },
-  { id: 2, name: "Brand 2" },
-  { id: 3, name: "Brand 3" },
-  { id: 4, name: "Brand 4" },
-  { id: 5, name: "Brand 5" },
-  { id: 6, name: "Brand 6" },
+  { id: 1, name: "Allbirds" },
+  { id: 2, name: "Icebreaker" },
+  { id: 3, name: "Kathmandu" },
+  { id: 4, name: "Swanndri" },
+  { id: 5, name: "Rodd & Gunn" },
+  { id: 6, name: "Karen Walker" },
 ];

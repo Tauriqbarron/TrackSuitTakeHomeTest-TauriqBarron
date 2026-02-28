@@ -8,7 +8,7 @@ type AddInsightProps = ModalProps;
 
 export const AddInsight = (props: AddInsightProps) => {
   const [text, setInsightText] = useState("");
-  const [brand, setbrand] = useState(0);
+  const [brand, setbrand] = useState(1); // default to first brand in dropdown
   const addInsight = async () => {
     await fetch("/api/insights/create", {
       method: "POST",
@@ -30,7 +30,9 @@ export const AddInsight = (props: AddInsightProps) => {
             onChange={(e) => setbrand(Number(e.target.value))}
           >
             {BRANDS.map(({ id, name }) => (
-              <option value={id}>{name}</option>
+              <option key={id} value={id}>
+                {name}
+              </option>
             ))}
           </select>
         </label>
