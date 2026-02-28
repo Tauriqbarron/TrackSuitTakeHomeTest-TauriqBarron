@@ -9,7 +9,8 @@ type AddInsightProps = ModalProps;
 export const AddInsight = (props: AddInsightProps) => {
   const [text, setInsightText] = useState("");
   const [brand, setbrand] = useState(1); // default to first brand in dropdown
-  const addInsight = async () => {
+  const addInsight = async (e: React.FormEvent) => {
+    e.preventDefault();
     await fetch("/api/insights/create", {
       method: "POST",
       headers: {

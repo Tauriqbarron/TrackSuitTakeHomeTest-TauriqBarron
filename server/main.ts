@@ -7,6 +7,7 @@ import listInsights from "./operations/list-insights.ts";
 import lookupInsight from "./operations/lookup-insight.ts";
 import createInsights from "./operations/create-insight.ts";
 import { createTable, Insert } from "$tables/insights.ts";
+import deleteInsight from "./operations/delete-insight.ts";
 
 console.log("Loading configuration");
 
@@ -55,7 +56,20 @@ router.post("/insights/create", async (ctx) => {
 
 //switch to delete
 router.delete("/insights/delete", (ctx) => {
-  // TODO
+  const id = ctx.request.url.searchParams.get("id");
+  if (!id) {
+    ctx.response.status = 400;
+    ctx.response.body = { error: "Missing id parameter" };
+    return;
+  }
+  const numericId = Number(id);
+  if (isNaN(numericId)) {
+    ctx.response.status = 400;
+    ctx.response.body = { error: "Invalid id parameter" };
+    return;
+  }
+  deleteInsight({ db }, numericId);
+  ctx.response.status = 200;
 });
 
 const app = new oak.Application();
