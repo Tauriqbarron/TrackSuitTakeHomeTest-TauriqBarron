@@ -10,16 +10,22 @@ type AddInsightProps = ModalProps & {
 
 export const AddInsight = (props: AddInsightProps) => {
   const [text, setInsightText] = useState("");
-  const [brand, setBrand] = useState(1); // default to first brand in dropdown
+  const [brand, setBrand] = useState(1);
+  const [error, setError] = useState(""); // default to first brand in dropdown
   const addInsight = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/insights/create", {
+    setError("");
+    const response = await fetch("/api/insights/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ brand, text }),
     });
+    if (!response.ok) {
+      setError("Failed to add insight have you added some text?");
+      return;
+    }
     props.onInsightAdded();
     setInsightText("");
     setBrand(1);
@@ -29,6 +35,7 @@ export const AddInsight = (props: AddInsightProps) => {
   return (
     <Modal {...props}>
       <h1 className={styles.heading}>Add a new insight</h1>
+      {error && <p style={{ color: "var(--color-red-500)" }}>{error}</p>}
       <form className={styles.form} onSubmit={addInsight}>
         <label className={styles.field}>
           <select

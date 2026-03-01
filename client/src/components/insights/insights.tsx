@@ -15,25 +15,28 @@ type InsightsProps = {
 
 interface InsightItemProps {
   insight: Insight;
-  onDelete: (id: number) => Promise<void>;
+  onDelete: (id: number) => Promise<Response>;
 }
 
-async function deleteInsight(id: number) {
-  const queryString = `/api/insights/delete?id=${id}`;
-
-  await fetch(queryString, {
+async function deleteInsight(id: number): Promise<Response> {
+  return await fetch(`/api/insights/delete?id=${id}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   });
 }
 
 const InsightItem = ({ insight, onDelete }: InsightItemProps) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [error, setError] = useState("");
 
   const handleDelete = async () => {
-    await onDelete(insight.id);
+    setError("");
+
+    const response = await onDelete(insight.id);
+    if (!response.ok) {
+      setError("Failed to delete insight");
+      return;
+    }
     setConfirmOpen(false);
   };
 
@@ -48,6 +51,7 @@ const InsightItem = ({ insight, onDelete }: InsightItemProps) => {
             onClick={() => setConfirmOpen(true)}
           />
           <Modal open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+            {error && <p style={{ color: "var(--color-red-500)" }}>{error}</p>}
             <p>Are you sure you want to delete this insight?</p>
             <Button
               theme="primary"
@@ -85,8 +89,11 @@ export const Insights = ({
               key={insight.id}
               insight={insight}
               onDelete={async (id) => {
-                await deleteInsight(id);
-                onInsightDeleted();
+                const response = await deleteInsight(id);
+                if (response.ok) {
+                  onInsightDeleted();
+                }
+                return response;
               }}
             ></InsightItem>
           ))
