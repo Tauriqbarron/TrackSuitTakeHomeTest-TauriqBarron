@@ -1,4 +1,3 @@
-// updated to be idempotent.
 export const createTable = `
   CREATE TABLE IF NOT EXISTS insights ( 
     id INTEGER PRIMARY KEY ASC NOT NULL,

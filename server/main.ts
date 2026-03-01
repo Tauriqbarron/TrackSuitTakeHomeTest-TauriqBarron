@@ -6,7 +6,7 @@ import { Port } from "../lib/utils/index.ts";
 import listInsights from "./operations/list-insights.ts";
 import lookupInsight from "./operations/lookup-insight.ts";
 import createInsights from "./operations/create-insight.ts";
-import { createTable, Insert } from "$tables/insights.ts";
+import { createTable, type Insert } from "$tables/insights.ts";
 import deleteInsight from "./operations/delete-insight.ts";
 
 console.log("Loading configuration");
@@ -23,7 +23,7 @@ await Deno.mkdir(path.dirname(dbFilePath), { recursive: true });
 const db = new Database(dbFilePath);
 
 console.log("Ensuring insights table exists");
-db.exec(createTable); // adding create table step const updated to be indempotent
+db.exec(createTable);
 
 console.log("Initialising server");
 
@@ -37,7 +37,7 @@ router.get("/_health", (ctx) => {
 router.get("/insights", (ctx) => {
   const result = listInsights({ db });
   ctx.response.body = result;
-  ctx.response.status = 200; // wrong property here
+  ctx.response.status = 200;
 });
 
 router.get("/insights/:id", (ctx) => {
@@ -47,29 +47,32 @@ router.get("/insights/:id", (ctx) => {
   ctx.response.status = 200;
 });
 
-//switched to post
 router.post("/insights/create", async (ctx) => {
   const requestBody = await ctx.request.body.json() as Insert;
-  createInsights({ db }, requestBody);
-  ctx.response.status = 200;
+  const result = createInsights({ db }, requestBody);
+  if (!result.success) {
+    ctx.response.status = 400;
+    ctx.response.body = { error: result.message };
+    return;
+  }
+  ctx.response.status = 201;
 });
 
-//switch to delete
 router.delete("/insights/delete", (ctx) => {
-  const id = ctx.request.url.searchParams.get("id");
-  if (!id) {
+  const idparam = ctx.request.url.searchParams.get("id");
+  if (!idparam) {
     ctx.response.status = 400;
     ctx.response.body = { error: "Missing id parameter" };
     return;
   }
-  const numericId = Number(id);
-  if (isNaN(numericId)) {
+  const id = Number(idparam);
+  const result = deleteInsight({ db }, id);
+  if (!result.success) {
     ctx.response.status = 400;
-    ctx.response.body = { error: "Invalid id parameter" };
+    ctx.response.body = { error: result.message };
     return;
   }
-  deleteInsight({ db }, numericId);
-  ctx.response.status = 200;
+  ctx.response.status = 204;
 });
 
 const app = new oak.Application();

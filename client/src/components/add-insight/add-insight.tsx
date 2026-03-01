@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BRANDS } from "../../lib/consts.ts";
+import { BRANDS } from "../../../../lib/consts.ts";
 import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
 import styles from "./add-insight.module.css";
@@ -21,6 +21,8 @@ export const AddInsight = (props: AddInsightProps) => {
       body: JSON.stringify({ brand, text }),
     });
     props.onInsightAdded();
+    setInsightText("");
+    setBrand(1);
     props.onClose();
   };
 
