@@ -2,7 +2,7 @@ import { Trash2Icon } from "lucide-react";
 import { cx } from "../../lib/cx.ts";
 import styles from "./insights.module.css";
 import type { Insight } from "../../schemas/insight.ts";
-import { BRANDS } from "../../lib/consts.ts";
+import { BRANDS } from "../../../../lib/consts.ts";
 import { Modal } from "../modal/modal.tsx";
 import { useState } from "react";
 import { Button } from "../button/button.tsx";
@@ -10,6 +10,7 @@ import { Button } from "../button/button.tsx";
 type InsightsProps = {
   insights: Insight[];
   className?: string;
+  onInsightDeleted: () => void;
 };
 
 interface InsightItemProps {
@@ -17,7 +18,7 @@ interface InsightItemProps {
   onDelete: (id: number) => Promise<void>;
 }
 
-async function DeleteInsight(id: number) {
+async function deleteInsight(id: number) {
   const queryString = `/api/insights/delete?id=${id}`;
 
   await fetch(queryString, {
@@ -32,7 +33,7 @@ const InsightItem = ({ insight, onDelete }: InsightItemProps) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const handleDelete = async () => {
-    await DeleteInsight(insight.id);
+    await onDelete(insight.id);
     setConfirmOpen(false);
   };
 
@@ -69,7 +70,11 @@ const InsightItem = ({ insight, onDelete }: InsightItemProps) => {
   );
 };
 
-export const Insights = ({ insights, className }: InsightsProps) => {
+export const Insights = ({
+  insights,
+  className,
+  onInsightDeleted,
+}: InsightsProps) => {
   return (
     <div className={cx(className)}>
       <h1 className={styles.heading}>Insights</h1>
@@ -79,7 +84,10 @@ export const Insights = ({ insights, className }: InsightsProps) => {
             <InsightItem
               key={insight.id}
               insight={insight}
-              onDelete={DeleteInsight}
+              onDelete={async (id) => {
+                await deleteInsight(id);
+                onInsightDeleted();
+              }}
             ></InsightItem>
           ))
         ) : (

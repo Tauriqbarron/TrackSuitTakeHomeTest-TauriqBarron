@@ -1,4 +1,4 @@
-import { HasDBClient } from "../shared.ts";
+import type { HasDBClient } from "../shared.ts";
 
 type input = HasDBClient;
 

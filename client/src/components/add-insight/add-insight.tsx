@@ -4,11 +4,13 @@ import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
 import styles from "./add-insight.module.css";
 
-type AddInsightProps = ModalProps;
+type AddInsightProps = ModalProps & {
+  onInsightAdded: () => void;
+};
 
 export const AddInsight = (props: AddInsightProps) => {
   const [text, setInsightText] = useState("");
-  const [brand, setbrand] = useState(1); // default to first brand in dropdown
+  const [brand, setBrand] = useState(1); // default to first brand in dropdown
   const addInsight = async (e: React.FormEvent) => {
     e.preventDefault();
     await fetch("/api/insights/create", {
@@ -18,6 +20,8 @@ export const AddInsight = (props: AddInsightProps) => {
       },
       body: JSON.stringify({ brand, text }),
     });
+    props.onInsightAdded();
+    props.onClose();
   };
 
   return (
@@ -28,7 +32,7 @@ export const AddInsight = (props: AddInsightProps) => {
           <select
             className={styles["field-input"]}
             value={brand}
-            onChange={(e) => setbrand(Number(e.target.value))}
+            onChange={(e) => setBrand(Number(e.target.value))}
           >
             {BRANDS.map(({ id, name }) => (
               <option key={id} value={id}>
