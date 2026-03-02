@@ -14,7 +14,9 @@ const TEST_INSIGHTS = [
 
 describe("insights", () => {
   it("renders", () => {
-    const { getByText } = render(<Insights insights={TEST_INSIGHTS} onInsightDeleted={() => {}} />);
+    const { getByText } = render(
+      <Insights insights={TEST_INSIGHTS} onInsightDeleted={() => {}} />,
+    );
     expect(getByText(TEST_INSIGHTS[0].text)).toBeTruthy();
   });
 });

@@ -83,23 +83,24 @@ export const Insights = ({
     <div className={cx(className)}>
       <h1 className={styles.heading}>Insights</h1>
       <div className={styles.list}>
-        {insights?.length ? (
-          insights.map((insight) => (
-            <InsightItem
-              key={insight.id}
-              insight={insight}
-              onDelete={async (id) => {
-                const response = await deleteInsight(id);
-                if (response.ok) {
-                  onInsightDeleted();
-                }
-                return response;
-              }}
-            ></InsightItem>
-          ))
-        ) : (
-          <p>We have no insight!</p>
-        )}
+        {insights?.length
+          ? (
+            insights.map((insight) => (
+              <InsightItem
+                key={insight.id}
+                insight={insight}
+                onDelete={async (id) => {
+                  const response = await deleteInsight(id);
+                  if (response.ok) {
+                    onInsightDeleted();
+                  }
+                  return response;
+                }}
+              >
+              </InsightItem>
+            ))
+          )
+          : <p>We have no insight!</p>}
       </div>
     </div>
   );
