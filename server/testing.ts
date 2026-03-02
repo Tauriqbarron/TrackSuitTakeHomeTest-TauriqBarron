@@ -26,8 +26,10 @@ export const withDB = <R>(fn: (fixture: Fixture) => R): R => {
         return db.sql<insightsTable.Row>`SELECT * FROM insights`;
       },
       insert(insights) {
-        for (const item of insights) {
-          db.exec(insightsTable.insertStatement(item));
+        for (const { brand, createdAt, text } of insights) {
+          db.prepare(
+            "INSERT INTO insights (brand, createdAt, text) VALUES (:brand, :createdAt, :text)",
+          ).run({ brand, createdAt, text });
         }
       },
     },
