@@ -39,7 +39,7 @@ export default function createInsights(
   }
   insertdata.createdAt = new Date().toISOString();
   input.db.prepare(
-    "INSERT INTO insights (brand, createdAt, text) VALUES (@brand, @createdAt, @text)",
+    "INSERT INTO insights (brand, createdAt, text) VALUES (:brand, :createdAt, :text)",
   ).run(insertdata);
   console.log("Insight created successfully");
   return { success: true, message: "Insight created successfully" };

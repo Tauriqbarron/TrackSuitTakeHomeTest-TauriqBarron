@@ -33,7 +33,13 @@ export const AddInsight = (props: AddInsightProps) => {
   };
 
   return (
-    <Modal {...props}>
+    <Modal
+      {...props}
+      onClose={() => {
+        setError("");
+        props.onClose();
+      }}
+    >
       <h1 className={styles.heading}>Add a new insight</h1>
       {error && <p style={{ color: "var(--color-red-500)" }}>{error}</p>}
       <form className={styles.form} onSubmit={addInsight}>
